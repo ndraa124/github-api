@@ -12,8 +12,7 @@ Show data users from github
 1. Node Js
 2. Node_modules
 3. Postman
-4. Web Server
-5. Visual Studio Code
+4. Visual Studio Code
 
 ## How to run the app ?
 
