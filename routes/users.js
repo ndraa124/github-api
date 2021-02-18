@@ -2,8 +2,36 @@ const express = require('express')
 const router = express.Router()
 const config = require('../config/api.config')
 const axios = require('axios')
+let token = null
 
-router.get('/github/callback', function (_req, res, _next) {
+router.get('/', (_req, res) => {
+  res.redirect(`https://github.com/login/oauth/authorize?client_id=${config.githubClient}&scopes=repo%20write:org&state=something-random`)
+})
+
+router.get('/github/callback', function (req, res, _next) {
+  const body = {
+    client_id: config.githubClient,
+    client_secret: config.githubSecret,
+    code: req.query.code
+  }
+
+  const opts = { headers: { accept: 'application/json' } }
+  axios.post(`https://github.com/login/oauth/access_token?client_id=${body.client_id}&client_secret=${body.client_secret}&code=${body.code}`, body, opts)
+    .then(res => {
+      console.log(res.data.access_token)
+      token = res.data.access_token
+    })
+    .then(() => {
+      console.log('My token:', token)
+      res.json({
+        ok: 1,
+        token: token
+      })
+    })
+    .catch(err => res.status(500).json({ message: err.message }))
+})
+
+router.get('/github', function (_req, res, _next) {
   axios({
     method: 'get',
     url: `https://api.github.com/users/${config.githubUsername}`,
