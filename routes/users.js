@@ -5,7 +5,7 @@ const axios = require('axios')
 let token = null
 
 router.get('/', (_req, res) => {
-  res.redirect(`https://github.com/login/oauth/authorize?client_id=${config.githubClient}&scopes=repo%20write:org&state=something-random`)
+  res.redirect(`https://github.com/login/oauth/authorize?client_id=${config.githubClient}&scopes=repo`)
 })
 
 router.get('/github/callback', function (req, res, _next) {
@@ -31,7 +31,7 @@ router.get('/github/callback', function (req, res, _next) {
     .catch(err => res.status(500).json({ message: err.message }))
 })
 
-router.get('/github', function (_req, res, _next) {
+/* router.get('/github', function (_req, res, _next) {
   axios({
     method: 'get',
     url: `https://api.github.com/users/${config.githubUsername}`,
@@ -56,6 +56,6 @@ router.get('/github', function (_req, res, _next) {
   }).catch(err => {
     res.send(err)
   })
-})
+}) */
 
 module.exports = router
